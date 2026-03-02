@@ -12,11 +12,12 @@ Install NocoBase successfully and start it with verifiable access.
 # Workflow
 
 1. Ask which installation method the user wants.
-2. Ask the target installation directory (absolute or relative path).
-3. If user has no method preference, recommend Docker first.
-4. Follow the method guide in `references/install-methods.md`.
-5. Provide exact install and startup commands using the confirmed directory.
-6. Verify startup with login page access and health check.
+2. Ask which NocoBase release channel the user wants: `latest (stable)`, `beta`, or `alpha`.
+3. Ask the target installation directory (absolute or relative path).
+4. If user has no method preference, recommend Docker first.
+5. Follow the method guide in `references/install-methods.md` and align with the official quickstart docs: `https://v2.docs.nocobase.com/get-started/quickstart`.
+6. Provide exact install and startup commands using the confirmed directory and chosen release channel.
+7. Verify startup with login page access and health check.
 
 # Method Rule
 
@@ -26,11 +27,12 @@ Install NocoBase successfully and start it with verifiable access.
 
 # Mandatory Clarification Gate
 
-- Do not output installation commands before both of these are confirmed:
+- Do not output installation commands before all of these are confirmed:
 - Installation method.
+- Target release channel (`latest/stable`, `beta`, `alpha`).
 - Installation directory.
-- If either is missing, ask concise questions first.
-- If user says "you decide", choose Docker and ask only for directory.
+- If any item is missing, ask concise questions first.
+- If user says "you decide", choose Docker and still ask for release channel and directory.
 
 # Mandatory Doc-Read Gate
 
@@ -42,6 +44,7 @@ Install NocoBase successfully and start it with verifiable access.
 # Question Template
 
 - Method question: "Which NocoBase installation method do you want: Docker (recommended), create-nocobase-app, or Git/source?"
+- Version question: "Which release channel do you want to install: latest (stable), beta, or alpha?"
 - Directory question: "Please provide the target installation directory (for example `./my-nocobase` or `/opt/nocobase`)."
 
 # Resources

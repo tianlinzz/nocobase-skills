@@ -16,6 +16,12 @@ Retrieve live Swagger/OpenAPI JSON from NocoBase for endpoint discovery and requ
 3. Execute `scripts/get-swagger.sh <namespace>`.
 4. This script delegates request execution to `../nocobase-api-call/scripts/nocobase-api.sh`.
 5. Return raw JSON or pipe to `jq` for path/operation extraction.
+6. If response indicates `404 Not Found`, prompt user to check and enable `API Docs` plugin, then retry.
+
+# 404 Handling Note
+
+- `404 Not Found` from `/swagger:get` usually means `API Docs` plugin is not enabled.
+- Prompt user to enable `API Docs` in admin plugins before continuing.
 
 # Resources
 

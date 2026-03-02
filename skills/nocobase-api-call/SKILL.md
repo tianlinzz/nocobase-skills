@@ -25,6 +25,8 @@ Run direct NocoBase API requests in a deterministic, low-dependency way for reus
 - If `NOCOBASE_API_TOKEN` is missing, do not provide offline substitutes.
 - You must guide the user to configure auth first, then resume the API task.
 - Do not switch to "design doc only", "manual JSON only", or "one-click later" fallback outputs.
+- Do not attempt to obtain token on behalf of user by calling login APIs or creating API keys automatically.
+- If auth is not ready, stop API execution and ask user to complete token configuration manually.
 
 # Missing-Token Response Template
 

@@ -1,81 +1,56 @@
-# NocoBase Skills Workspace
+# NocoBase Skills
 
-This workspace is organized around composable skills. Base capabilities are centralized, and domain skills build on top of them.
+This repository provides reusable NocoBase skills for coding agent CLIs (Codex, Claude Code, OpenCode, etc.) to automate installation, API calls, Swagger discovery, and data modeling tasks.
 
-## Skill Roles
+## Available Skills
 
-- `skills/nocobase-install-start`: install and start NocoBase.
-- `skills/nocobase-api-call`: single base skill for authenticated API requests and environment setup.
-- `skills/nocobase-swagger-fetch`: fetch Swagger by delegating to `nocobase-api-call`.
-- `skills/nocobase-data-modeling`: data modeling workflow using fixed namespace `plugins%2Fdata-source-main`.
+- `nocobase-install-start`: installs and starts NocoBase (Docker / create-nocobase-app / git).
+- `nocobase-api-call`: executes authenticated NocoBase API requests with environment setup guidance.
+- `nocobase-swagger-fetch`: fetches Swagger/OpenAPI docs by namespace via `nocobase-api-call`.
+- `nocobase-data-modeling`: runs an end-to-end data modeling flow based on Swagger + API calls.
 
-## 1) Install NocoBase
+## Installation
 
-Use `nocobase-install-start` skill first.
+1. Install a coding agent CLI.
 
-It helps choose one method (`docker`, `create-nocobase-app`, `git`) and provides startup commands after you confirm install directory.
+Use any supported agent CLI, such as Codex, Claude Code, or OpenCode.
 
-## 2) Enable Required Plugins and Get API Key
+2. Install Skills from [skills.sh](https://skills.sh/).
 
-After NocoBase starts:
+Install all NocoBase skills from this repository:
 
-1. Sign in to NocoBase admin UI.
-2. Enable plugin `API Keys`.
-3. Enable plugin `API Docs` (depends on API endpoint access and Swagger docs).
-4. Open `Settings -> API keys`.
-5. Create a key and copy the token.
+```bash
+mkdir nocobase-app-builder && cd nocobase-app-builder
+npx skills add nocobase/skills
+```
 
-## 3) Configure API Environment (Generic)
+## Recommended Usage Flow
 
-Preferred approach: set global/session environment variables:
+1. Install NocoBase (skip this step if it is already installed).
+
+Ask your agent to complete installation and startup:
+
+```bash
+Install and start NocoBase.
+```
+
+2. Enable the `API Keys` plugin and create a token.
+
+In NocoBase admin:
+
+- Enable the `API Keys` plugin.
+- Go to `Settings -> API keys`.
+- Create a key and copy the token.
+
+3. Enable the `API Docs` plugin.
+
+Enable `API Docs` before any Swagger-related tasks.
+
+If the Swagger API returns `404 Not Found`, the most likely cause is that `API Docs` is not enabled.
+
+4. Configure environment variables.
 
 ```bash
 export NOCOBASE_URL="http://localhost:13000"
 export NOCOBASE_API_TOKEN="<your-token>"
-```
-
-Optional fallback: create `./.env` in current working directory:
-
-```bash
-cat > .env <<'EOF'
-NOCOBASE_URL=http://localhost:13000
-NOCOBASE_API_TOKEN=replace-with-your-api-token
-EOF
-```
-
-Skills will read config in this order:
-
-1. Environment variables (`NOCOBASE_URL`, `NOCOBASE_API_TOKEN`).
-2. `./.env` in current working directory.
-
-If token is missing and `./.env` does not exist, `skills/nocobase-api-call/scripts/nocobase-api.sh`
-will auto-create `./.env` template and prompt you to edit the token.
-
-## 4) Call API Directly
-
-```bash
-skills/nocobase-api-call/scripts/nocobase-api.sh GET /collections:list
-skills/nocobase-api-call/scripts/nocobase-api.sh POST /collections:create '{"name":"products","title":"Products"}'
-```
-
-## 5) Fetch Swagger (No Default Namespace)
-
-`nocobase-swagger-fetch` requires namespace explicitly every time:
-
-```bash
-skills/nocobase-swagger-fetch/scripts/get-swagger.sh plugins%2Fdata-source-main
-skills/nocobase-swagger-fetch/scripts/get-swagger.sh core
-```
-
-## 6) Data Modeling Workflow
-
-`nocobase-data-modeling` always reads Swagger from namespace:
-
-- `plugins%2Fdata-source-main`
-
-Typical flow:
-
-```bash
-skills/nocobase-swagger-fetch/scripts/get-swagger.sh plugins%2Fdata-source-main | jq '.paths | keys'
-skills/nocobase-api-call/scripts/nocobase-api.sh POST /collections:create '{"name":"products","title":"Products"}'
 ```
