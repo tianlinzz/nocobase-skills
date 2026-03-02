@@ -13,10 +13,16 @@ Retrieve live Swagger/OpenAPI JSON from NocoBase for endpoint discovery and requ
 
 1. Ensure API authentication is ready by following `nocobase-api-call` skill rules.
 2. Confirm namespace explicitly (no default in this skill).
-3. Execute `scripts/get-swagger.sh <namespace>`.
-4. This script delegates request execution to `../nocobase-api-call/scripts/nocobase-api.sh`.
+3. Ask the agent to use `nocobase-api-call` to fetch `/swagger:get` for the confirmed namespace.
+4. Do not directly call another skill's script path from this skill.
 5. Return raw JSON or pipe to `jq` for path/operation extraction.
 6. If response indicates `404 Not Found`, prompt user to check and enable `API Docs` plugin, then retry.
+
+# Dependency Gate
+
+- Required dependency skill: `nocobase-api-call`.
+- If `nocobase-api-call` is not available, do not continue with fallback script-path calls.
+- Prompt user to install required skills first (for example: `npx skills add nocobase/skills`), then resume.
 
 # 404 Handling Note
 
@@ -30,10 +36,10 @@ Retrieve live Swagger/OpenAPI JSON from NocoBase for endpoint discovery and requ
 
 # Usage
 
-```bash
-# Collection manager namespace
-./scripts/get-swagger.sh plugins%2Fdata-source-main
+```text
+# Fetch Swagger in collection manager namespace
+Fetch Swagger for namespace `plugins%2Fdata-source-main`.
 
-# List all paths
-./scripts/get-swagger.sh plugins%2Fdata-source-main | jq '.paths | keys'
+# Inspect paths from returned JSON
+Inspect the returned JSON paths with `jq` expression `.paths | keys`.
 ```

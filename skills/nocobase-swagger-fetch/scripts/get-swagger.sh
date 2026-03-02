@@ -28,6 +28,9 @@ fi
 
 if [ ! -x "$API_CALL_SCRIPT" ]; then
   echo -e "${RED}Error: API caller script not found: $API_CALL_SCRIPT${NC}" >&2
+  echo "Required dependency skill is missing: nocobase-api-call" >&2
+  echo "Please install NocoBase skills first, for example:" >&2
+  echo "  npx skills add nocobase/skills" >&2
   exit 1
 fi
 

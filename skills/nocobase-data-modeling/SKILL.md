@@ -17,12 +17,18 @@ Design and implement NocoBase data models through API calls.
    - Configure relations
 2. Ensure API authentication is ready by following `nocobase-api-call` skill rules.
 3. Fetch API spec for data modeling namespace only:
-   - `skills/nocobase-swagger-fetch/scripts/get-swagger.sh plugins%2Fdata-source-main`
+   - Ask the agent to fetch Swagger using `nocobase-swagger-fetch` for `plugins%2Fdata-source-main`.
 4. Parse Swagger response to identify endpoint, method, and payload schema.
 5. Execute the request with `nocobase-api-call`:
-   - `skills/nocobase-api-call/scripts/nocobase-api.sh <METHOD> <ENDPOINT> [JSON_OR_FILE]`
+   - Ask the agent to call the target endpoint and payload through `nocobase-api-call`.
 6. Verify results by querying the created/updated collection or fields.
 7. For complex schemas, prefer templates in `assets/collection-templates/`.
+
+# Dependency Gate
+
+- Required dependency skills: `nocobase-swagger-fetch`, `nocobase-api-call`.
+- Never call another skill through direct script-path coupling.
+- If required skills are missing, pause and ask user to install skills first (for example: `npx skills add nocobase/skills`).
 
 # Mandatory Doc-Read Gate
 
@@ -37,16 +43,16 @@ Design and implement NocoBase data models through API calls.
 
 # Usage
 
-```bash
+```text
 # 1) Read available endpoints in fixed namespace
-skills/nocobase-swagger-fetch/scripts/get-swagger.sh plugins%2Fdata-source-main | jq '.paths | keys'
+Fetch Swagger for namespace `plugins%2Fdata-source-main`.
 
 # 2) Inspect create collection API
-skills/nocobase-swagger-fetch/scripts/get-swagger.sh plugins%2Fdata-source-main | jq '.paths["/collections:create"]'
+Extract from returned Swagger JSON: .paths["/collections:create"]
 
 # 3) Create collection
-skills/nocobase-api-call/scripts/nocobase-api.sh POST /collections:create '{"name":"products","title":"Products"}'
+Ask the agent to create collection `products` via `nocobase-api-call` on endpoint `/collections:create`.
 
 # 4) Verify
-skills/nocobase-api-call/scripts/nocobase-api.sh GET '/collections:get?filterByTk=products'
+Ask the agent to verify collection `products` via `nocobase-api-call` on endpoint `/collections:get?filterByTk=products`.
 ```
