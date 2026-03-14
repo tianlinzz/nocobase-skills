@@ -8,9 +8,8 @@ This repository provides reusable NocoBase skills for coding agent CLIs (Codex, 
 ## Available Skills
 
 - `nocobase-install-start`: installs and starts NocoBase (Docker / create-nocobase-app / git).
-- `nocobase-api-call`: executes authenticated NocoBase API requests with environment setup guidance.
-- `nocobase-swagger-fetch`: fetches Swagger/OpenAPI docs by namespace via `nocobase-api-call`.
-- `nocobase-data-modeling`: runs an end-to-end data modeling flow based on Swagger + API calls.
+- `nocobase-mcp-setup`: configures NocoBase as an MCP server for your coding agent CLI.
+- `nocobase-data-modeling`: runs data modeling operations through MCP tools.
 
 ## Installation
 
@@ -29,11 +28,11 @@ npx skills add nocobase/skills
 
 ## Recommended Usage Flow
 
-1. Install NocoBase (skip this step if it is already installed).
+1. Install NocoBase (skip if already installed).
 
-Ask your agent to complete installation and startup:
+Ask your agent:
 
-```bash
+```text
 Install and start NocoBase.
 ```
 
@@ -45,15 +44,52 @@ In NocoBase admin:
 - Go to `Settings -> API keys`.
 - Create a key and copy the token.
 
-3. Enable the `API Docs` plugin.
+3. Configure NocoBase MCP server.
 
-Enable `API Docs` before any Swagger-related tasks.
+Ask your agent:
 
-If the Swagger API returns `404 Not Found`, the most likely cause is that `API Docs` is not enabled.
+```text
+Set up NocoBase MCP connection.
+```
 
-4. Configure environment variables.
+Or configure it manually:
+
+Prerequisites:
+
+- NocoBase is running.
+- The `API Keys` plugin is enabled.
+- You have created an API token in `Settings -> API keys`.
+
+NocoBase MCP endpoint:
+
+- URL: `https://your-nocobase-host/api/mcp`
+- Header: `Authorization: Bearer your-token`
+
+Examples:
+
+**Codex CLI**
 
 ```bash
-export NOCOBASE_URL="http://localhost:13000"
-export NOCOBASE_API_TOKEN="<your-token>"
+export NOCOBASE_API_TOKEN="your-token"
+codex mcp add nocobase --url https://your-nocobase-host/api/mcp --bearer-token-env-var NOCOBASE_API_TOKEN
 ```
+
+**Claude Code**
+
+```bash
+claude mcp add --transport http nocobase https://your-nocobase-host/api/mcp --header "Authorization: Bearer your-token"
+```
+
+**Other CLIs**
+
+Use your CLI's MCP configuration mechanism with the same endpoint and bearer token header shown above.
+
+4. Start building with data modeling.
+
+Ask your agent:
+
+```text
+Create a collection named "products" with fields: title (text), price (number), description (textarea).
+```
+
+All NocoBase API operations are now available through MCP tools.
